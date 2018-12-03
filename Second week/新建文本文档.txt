@@ -1,0 +1,127 @@
+linux一切皆文件
+命令组成:cmd [options] [args] 指令+选项+文件 选项前加-
+man	打开手册
+pwd	显示当前工作路径
+cd	切换工作路径
+ls	显示当前路径下文件
+	-a 显示隐藏文件
+	-l 显示文件权限，所属用户，所属组，文件大小，时间信息，文件名
+	-i 显示文件节点号
+	-d 显示当前目录
+	-ld 显示当前目录具体信息
+	-lh 显示的文件大小更详细
+
+cat	显示非目录文件全部内容
+less	按屏显示
+head	显示文件前几行
+tail	显示文件后几行
+cp	复制
+mv	剪切
+rm	删除
+touch	创建非目录文件
+mkdir	创建目录文件
+
+关机
+shutdown -h now	
+poweroff
+init 0
+halt
+
+重启
+shutdown -r now
+reboot
+init 6
+
+history	查看历史命令
+
+
+stat 文件/文件系统的详细信息显示
+		
+七种文件类型
+-	regular		普通文件
+d	directory		目录文件
+c	charactor		字符设备文件
+b	block		块设备文件
+l	link		符号链接文件
+p	pipe		管道文件
+s	socket		套接字文件
+
+文件权限
+拥有者    所属组    其他用户
+u	 g 	o	a(all)
+chmod	修改文件权限
+
+非目录文件：r读取 	w写(修改该文件内容) x执行				
+目录文件:
+r	ls		读取目录结构列表的权限
+w	touch / mkdir / rm	更改该目录结构列表的权限
+x	cd		用户进入该目录成为工作目录的权限
+
+防止产生权限过大的文件:
+umask
+mode & ~umask === 文件真正的权限
+
+特殊权限
+u+s---》所有有此权限的执行文件，可以使普通用户在执行此命令期间，将身份切换为文件拥有者
+
+
+硬链接:同一个文件，多一个名字			
+inode是同一个分区文件的唯一标识
+所以硬链接文件不能跨分区	
+ln srcpath dest
+cp -l srcpath dest
+
+符号链接(软链接):
+就是一个快捷方式，存储是源文件的路径
+可以跨分区
+ln -s srcpath dest
+cp -s srcpath dest
+		
+
+文件拥有者和所属组
+useradd username	创建用户
+passwd username	给定密码
+su - username	切换用户
+userdel -r username	删除用户
+exit		登出用户
+
+用户信息:
+	/etc/passwd
+组信息:
+	/etc/group
+密码:
+	/etc/shadow
+			
+groupadd groupname	组创建
+groupdel groupname	组删除
+用户添加到组内:
+	gpasswd -a user group
+用户从组中删除:
+	gpasswd -d user group
+
+文件大小
+	文件的大小(size) != 所占磁盘空间的大小(block)
+stat filepath
+	block == 512bytes
+du -sh filepath 查看filepath对应的文件所占用磁盘空间的大小
+df -h 查看磁盘分区占用情况
+
+文件时间
+	access time	
+	modify time		ls -l 内容改变
+	change time		属性改变
+
+
+补充：
+gedit打开文件
+echo添加进文件
+chown修改文件所有者和组别
+如何编译一个可执行文件 例c：	gcc  xx.c -o xx
+文件大小	字节c(默认)  512字节b  1000字节k
+标准错误输出重定向2 例：	cat jkjga 2>ty2.txt 
+
+
+问题
+1.用户uplooking root组权限无法修改root文件
+解决：文件所在目录组权限未添加x权限
+2.gedit在别的用户

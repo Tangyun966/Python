@@ -1,0 +1,132 @@
+5.软件包管理
+源码包
+	.tar.gz .tar.bz2 .tar.xz
+	<1>下载并解压解包
+	<2>编译make
+	<3>make install
+
+二进制包(.rpm)
+	yum 安装:
+		/etc/yum.repo.d/xxx.repo
+		yum install xxxx
+		例如有如下软件包:
+			coreutils-8.22-21.el7.x86_64.rpm
+			coreutils包名
+		yum install coreutils 安装 
+		yum remove coreutils 卸载 
+		yum repolist 查看仓库中有多少软件包
+		yum list 列出所有的软件包
+		yum provides /usr/bin/ls 查看文件对应的软件包
+		yum update coreutils 更新
+		yum clean all 清除缓存
+			
+	yum源所在路径
+		/etc/yum.repos.d/xxx.repo
+
+	本地yum源配置:
+		1.将镜像文件挂载到文件系统
+		2.创建镜像的挂载点 mkdir /mnt/centos7
+		3.光盘镜像在/dev/cdrom目录
+		4.挂载光盘镜像
+			mount -t iso9660 -o loop /dev/cdrom /mnt/centos7
+		5.配置镜像的yum源
+			vim /etc/yum.repos.d/my.repo		
+				
+			[local_centos7]
+			name=centos7
+			baseurl=file:///mnt/centos7
+			enabled=1
+			gpgcheck=0
+
+	已下载的rpm软件包,安装:
+		xxxx.rpm
+				
+		rpm -ivh xxxx 安装已下载的rpm包
+		rpm -e xxxx 卸载
+		rpm -U xxxx 更新
+		rpm -qa 查询系统中所有已安装的rpm包
+		rpm -qf /usr/bin/ls 查询ls对应的软件包
+
+6.网络管理
+	<1>查看ip, mac, netmask....
+		ip addr
+		ifconfig		
+	<2>查看/启动/重启/关闭/自启动/禁用服务
+		systemctl status/start/restart/stop/enable/disable 服务名字
+	<3>手动配置静态ip地址
+		关闭NetworkManager
+			systemctl stop NetworkManager
+		配置/etc/sysconfig/network-scripts/ifcfg-xxx
+			DEVICE=eth0
+			BOOTPROTO=none
+			NM_CONTROLLED=no
+			ONBOOT=yes
+			TYPE=Ethernet
+			IPADDR=172.16.60.1
+			PREFIX=24
+			GATEWAY=172.16.60.254	
+		重启网络服务
+		systemctl restart network
+
+	<4>防火墙
+		关闭防火墙	
+			systemctl stop firewalld
+			systemctl disable firewalld
+
+	<5>vsftpd服务 ---> 文件共享
+		安装:yum install vsftpd 
+		启动:systemctl start vsftpd
+		开机自启动:systemctl enable vsftpd
+		配置文件:/etc/vsftpd/vsftpd.conf
+		
+		访问共享目录:
+		下载安装:yum install lftp
+		lftp 192.168.5.129
+		lcd --->切换下载路径
+		get filepath 下载非目录文件
+		mirror filepath 下载目录文件
+		bye 退出
+	<6>nfs远程挂载
+		下载安装:
+			yum install nfs-utils rpcbind
+		启动:
+			systemctl start nfs
+			systemctl enable nfs
+			systemctl start rpcbind
+			systemctl enable rpcbind
+		编辑共享路径:
+			vim /etc/selinux/config
+			改第一项为disable
+			vim /etc/exports添加
+			添加/var/ftp/pub *(ro,sync,no_root_squash)
+			
+		客户端挂载:
+			mount 192.168.5.129:/var/ftp/pub /mnt
+
+
+7.进程管理
+	查看进程信息
+		ps aux	
+	终止进程通过kill 发送信号
+		kill -l查看所有的信号
+		kill -9 3333	发送9号信号给进程号为3333的进程
+	top 实时查看系统中进程的运行状态	
+
+
+补充：
+挂载推荐挂mnt里
+yum 镜像卸载后改 配置镜像的yum源后缀repo 然后清除缓存yum clean all 去挂载umount -a 
+使用yum一定记得开网络
+快捷键：
+alt+f12		打开终端
+super+tab		切换窗口
+super+空格	切换输入法
+ctrl+l		终端清屏
+ctrl+d		终端关闭/退出部分指令
+
+问题:
+1.rpm
+2.开机自启动网络没用
+改/etc/sysconfig/network-scripts/ifcfg-ens33	ONBOOT=yes
+使配置文件生效
+source /etc/sysconfig/network-scripts/ifcfg-ens33

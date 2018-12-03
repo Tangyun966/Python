@@ -1,0 +1,105 @@
+
+文件的查找
+	可执行文件:
+		which cmd	
+		whereis cmd
+
+非可执行:
+	遍历数据库 locate filepath
+	更新数据库 updatedb
+
+	find(遍历磁盘空间)
+	find path options 
+	options:
+		-name 按名字找
+			find /etc/ -name "passwd"
+		-size 按文件大小查找
+		find /etc/ -size n(b/c/k)
+		-mtime 修改时间
+		find /etc/ -mtime n(天)
+		-type 类型
+		find /etc/ -type f/d/c/b/p/l/s				
+		-exec 对于查找到的结果执行
+		find /etc/ -name "hello" -exec ls -l {} \;
+		只对找到的文件执行ls -l结果，不打印路径
+		-ok
+		find /etc/ -name "hello" -ok ls -l {} \;
+		在执行ls -l之前会询问
+		-print 打印查找的结果
+		find /etc/ -name "hello" -print  -exec ls -l {} \;
+		对找到的文件执行ls -l结果，打印路径
+		-a 连接多个查找选项的
+		find /etc/ -type d -a -size +10k	
+
+文件的打包压缩
+	压缩:
+		.gz .bz2 .zip
+		gzip file 压缩为.gz
+		gunzip file.gz 解压缩
+		bzip2 file 
+		bunzip2 file.bz2
+
+		zip xxx.zip file dir1 dir2
+		unzip xxxzip
+	主要tar options xx.tar.xx file1.... dir.....
+		options:
+			-c 创建
+			-v 过程可视
+			-f 在最后，后跟包名
+			-j 生成bz2压缩格式
+			-z 生成gz格式压缩文件
+			-J 生成xz格式
+			-x 解压缩
+			-C 指定解压路径
+			-t 不解压不解包的情况下查看压缩包中内容
+			-r 向包中追加新文件
+
+文件重定向
+	当用户登陆成功后，三个文件依次打开：
+		标准输入(stdin 0) 标准输出(stdout 1) 标准错误输出(stderr 2)			
+		0< 标准输入重定向
+		1> 标准输出重定向
+		2> 标准错误输出重定向
+		>> 追加
+
+	| 管道
+
+	wc [-lwc] filepath
+	-l line 统计filepath文件的行数
+	-w word	单词个数
+	-c charactor 字符个数
+
+	grep [-iwn] key filepath ---->筛选文件内容
+	
+	vim编辑器的使用:
+		vim filepath---->打开--->一般模式
+		--->进入编辑模式进行编辑(iIaAoOsS)
+		--->从编辑模式进入一般模式(Esc / Ctrl+c)
+		--->从一般模式进入命令行模式(:w保存 :q退出)
+		一般模式下:
+			2yy 复制2行
+			p	粘贴
+			2dd	剪切2行
+			u	撤销
+			Ctrl+r	还原
+			x/X 删除光标字符
+			r	替换
+			R	一直替换到Esc为止
+			块选择:
+				ctrl+v 方向键选择	
+				I / A 插入相应内容--->Esc Esc
+			gg 首行
+			G  末行
+			5G 第5行
+
+命令行模式下:
+	: 进人命令模式
+	w 保存
+	q 退出
+	q! 强制退出
+	w filepath 另存为
+	saveas filepath 另存为
+	%s/oldstring/newstring/g 将所有的oldstring替换为newstring
+	2,5s/oldstring/newstring/g 将第2行到第5行oldstring替换为newstring
+	set nu 显示行号
+	set ts=4 将Tab设置为4个字符宽度	
